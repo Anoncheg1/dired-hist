@@ -7,7 +7,7 @@
 ;; Created: 2022
 ;; Version: 0.11
 ;; Package-Requires: ((emacs "26.1"))
-;; Keywords: convenience
+;; Keywords: convenience, dired, history
 ;; URL: https://github.com/Anoncheg1/dired-hist
 
 ;; This file is NOT part of GNU Emacs.
