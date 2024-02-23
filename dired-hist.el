@@ -127,7 +127,8 @@ For `dired-hist-stack' and `dired-hist-forward-stack'."
   "Add/create the `dired-hist-stack', previously visited paths.
 If `dired-kill-when-opening-new-dired-buffer' enable, clear
 forward stack also.
-Optional argument DONT-TOUCH-FORWARD used during go-forward command to prevent removing of forward stack."
+Optional argument DONT-TOUCH-FORWARD used during go-forward
+command to prevent removing of forward stack."
   (unless (dired-hist--match dired-hist-stack)
     (push (cons (point-marker) default-directory) dired-hist-stack)
     ;; clean forward stack if we are in dired 2) mode
