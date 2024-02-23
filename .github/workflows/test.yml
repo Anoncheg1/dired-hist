@@ -1,4 +1,4 @@
-name: CI-release
+name: release
 
 on:
   release:
