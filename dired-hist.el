@@ -69,6 +69,7 @@
 ;; - fixed behaviour for `dired-kill-when-opening-new-dired-buffer'
 ;;   two modes.
 ;; - comments, linting and push to MELPA
+;; - emacs "26.1" preserved.
 
 ;;; Code:
 (require 'dired)
