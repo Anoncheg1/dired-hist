@@ -42,8 +42,10 @@
 
 ;; (require 'dired-hist)
 ;; (add-hook 'dired-mode-hook #'dired-hist-mode)
-;; (define-key dired-mode-map (kbd "C-M-a") #'dired-hist-go-back)
-;; (define-key dired-mode-map (kbd "C-M-e") #'dired-hist-go-forward)
+;; (define-key dired-mode-map (kbd "l") #'dired-hist-go-back)
+;; (define-key dired-mode-map (kbd "r") #'dired-hist-go-forward)
+
+;; I use "C-M-a" and "C-M-e" instead.
 
 ;; Customization:
 
@@ -206,7 +208,11 @@ ITEM is a cons cell in form of (marker . directory-path)."
   ;; :keymap dired-hist-map
   (if dired-hist-mode
       (progn
-        (dired-hist--update t)
+        ;; if mode added as hook to `dired-mode-hook' or activated
+        ;; during Dired mode.
+        (if (eq major-mode 'dired-mode)
+            (dired-hist--update t))
+        ;; if mode activated globally
         (add-hook 'dired-mode-hook #'dired-hist--update))
     ;; else
     (remove-hook 'dired-mode-hook #'dired-hist--update)
