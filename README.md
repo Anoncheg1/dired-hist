@@ -3,13 +3,9 @@
 
 # dired-hist
 
-Add two commands: "back" and "forward".
+Add two commands: "back" and "forward". As buttons in every modern file managers: Thunar, Microsoft Explorer, Nautilus, Konqueror.
 
-Traverse Dired buffer history (or just path) according to history.
-
-As buttons in every modern file managers: Thunar, Microsoft Explorer, Nautilus, Konqueror.
-
-dired-hist is a minor mode for Emacs that keeps track of visited dired buffers and lets you go back and forwards across them. This is similar to the facility provided in other Emacs major modes, such as Info, help and EWW.
+Emacs Minor mode for Dired built-in file manager, that traverse buffer history (or just path) according to history.
 
 # Configuration
 

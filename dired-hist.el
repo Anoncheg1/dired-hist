@@ -28,9 +28,9 @@
 ;;; Commentary:
 
 ;; dired-hist is a minor mode for Emacs that keeps track of visited
-;; Dired buffers and lets you go back and forwards across them.  This is
-;; similar to the facility provided in other Emacs major modes, such as
-;; Info and EWW.
+;; Dired buffers or paths and lets you go back and forwards across
+;; them.  This is similar to the facility provided in Info, EWW and
+;; in modern filemanagers.
 
 ;; Commands:
 
