@@ -53,6 +53,24 @@
 
 ;; How it works:
 
+;; There is two stacks: with history and for Forward key.
+;; When we navigate the history grows, when we press back button
+;; we transfer last record from history to forward stack.
+;; Forward button do reverse - transfer from forward stack back to
+;; history.
+;;           .-> |-| -- Back >
+;;         -/    | |   \---     <--.
+;; -- Open/      |-|       \----    \--< Forward
+;;               | |            \---
+;;               | |                \->
+;;               |-|                    |-|
+;;               | |                    | |
+;;               |-|                    |-|
+;;               | |                    | |
+;;               +-+                    +-+
+;;         For Back <           For Forward >
+
+;; About two modes:
 ;; Dired have two modes `dired-kill-when-opening-new-dired-buffer':
 ;; 1) create new buffer when visit folder
 ;; 2) recreate buffer every time, to keep only one
