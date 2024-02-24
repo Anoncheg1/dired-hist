@@ -5,7 +5,7 @@
 ;; Author: Anoncheg1
 ;;      Karthik Chikmagalur <karthik.chikmagalur@gmail.com>
 ;; Created: 2022
-;; Version: 0.11
+;; Version: 0.12
 ;; Package-Requires: ((emacs "26.1"))
 ;; Keywords: convenience, dired, history
 ;; URL: https://github.com/Anoncheg1/dired-hist
@@ -53,14 +53,14 @@
 
 ;; How it works:
 
-;; There is two stacks: with history and for Forward key.
+;; There are two stacks: with history and for Forward key.
 ;; When we navigate the history grows, when we press back button
 ;; we transfer last record from history to forward stack.
 ;; Forward button do reverse - transfer from forward stack back to
 ;; history.
 ;;           .-> |-| -- Back >
 ;;         -/    | |   \---     <--.
-;; -- Open/      |-|       \----    \--< Forward
+;; -- Open/      |-|       \----    \-- Forward
 ;;               | |            \---
 ;;               | |                \->
 ;;               |-|                    |-|
@@ -79,6 +79,12 @@
 ;; When in 1) we go to a new directory we just add new item to
 ;; hist-stack.
 ;; When in 2) we go to a new directory we also clear forward-stack.
+;;
+;; Special cases for nil `dired-kill-when-opening-new-dired-buffer':
+;; - If buffer is closed then removed from history.
+;; - When we change buffer manually history stay the same.
+;; - if we changed manually buffer and go back we don't add it to
+;;   stack.
 
 ;;; Change Log:
 
@@ -86,10 +92,13 @@
 ;; - original from https://github.com/karthink/dired-hist
 ;; 0.11
 ;; - added debuging
-;; - fixed behaviour for `dired-kill-when-opening-new-dired-buffer'
-;;   two modes.
+;; - fixed behaviour for `dired-kill-when-opening-new-dired-buffer' t.
 ;; - comments, linting and push to MELPA
 ;; - emacs "26.1" preserved.
+;; 0.12
+;; - additinal debugging
+;; - better behavior for dired-kill-when-opening-new-dired-buffer nil
+;;   mode: when change buffer manually and close buffer.
 
 ;;; Code:
 (require 'dired)
@@ -115,26 +124,33 @@
     (setq dired-hist-debug t)
     (when (eq (length (window-list)) 1)
       (let ((cw (selected-window))
-            (window (split-window-horizontally)))
-        (select-window window)
+            (w-messages (split-window-horizontally))
+            (w-buffers (split-window-vertically)))
+        (select-window w-messages)
         (switch-to-buffer "*Messages*")
         (call-interactively #'end-of-buffer)
+        (select-window w-buffers)
+        (buffer-menu)
         (select-window cw))))
   (print (list "dired-hist-debug" dired-hist-debug)))
 
-(defun dired-hist-debug-print ()
+(defun dired-hist-debug-print (&optional where)
   "Debug."
-    (print "hist stack:")
-    (cl-loop for b in dired-hist-stack
-             do (print b))
-    (print "forward stack:")
-    (cl-loop for b in dired-hist-forward-stack
-             do (print b))
-    ;; force wrap of messages to bottom
-    (let ((cw (current-buffer)))
-      (switch-to-buffer "*Messages*")
-      (call-interactively #'end-of-buffer)
-      (switch-to-buffer cw)))
+  (if where
+      (print (concat "print at " where)))
+  (print "hist stack:")
+  (cl-loop for b in dired-hist-stack
+           do (print b))
+  (print "forward stack:")
+  (cl-loop for b in dired-hist-forward-stack
+           do (print b))
+  ;; force wrap of messages to bottom and update buffers list
+  (let ((cw (current-buffer)))
+    (switch-to-buffer "*Buffer List*")
+    (buffer-menu)
+    (switch-to-buffer "*Messages*")
+    (call-interactively #'end-of-buffer)
+    (switch-to-buffer cw)))
 
 ;; ----
 
@@ -156,13 +172,13 @@ command to prevent removing of forward stack."
     (if (and dired-kill-when-opening-new-dired-buffer (null dont-touch-forward))
         (setq dired-hist-forward-stack nil)))
   ;; debug
-  (if dired-hist-debug (dired-hist-debug-print)))
+  (if dired-hist-debug (dired-hist-debug-print "Update")))
 
 (defun dired-hist-go-back ()
   "Transfer element from hist-stack to forward-stack."
   (interactive)
   ;; 1) update
-  (dired-hist--update)
+  ;; (dired-hist--update) ; used only when buffer was canged manually
   ;; 2) Transfer element from hist-stack to forward-stack.
   ;; we should remove element from dired-hist-stack if doesn't nil
   ;; and have at least 2 elements.
@@ -172,9 +188,13 @@ command to prevent removing of forward stack."
     (if (dired-hist--match dired-hist-forward-stack)
         (pop dired-hist-stack)
       ;; else ; transfer
-      (push (pop dired-hist-stack) dired-hist-forward-stack))
-    ;; 3) go to last element of hist-stack
-    (dired-hist--visit (car dired-hist-stack))))
+      (push (pop dired-hist-stack) dired-hist-forward-stack)))
+  ;; 3) go to last element of hist-stack
+  ;; if not already at it.
+  (if (not (equal default-directory (cdr (car dired-hist-stack))))
+      (dired-hist--visit (car dired-hist-stack)))
+  ;; debug
+  (if dired-hist-debug (dired-hist-debug-print "Go-Back")))
 
 (defun dired-hist-go-forward ()
   "Transfer element from forward-stack to hist-stack."
@@ -188,7 +208,9 @@ command to prevent removing of forward stack."
     ;; `dired-hist--update' but without removing
     ;; add current path to hist-stack
     ;; we don't transfer, to enshure that there is not duplicates
-    (dired-hist--update t)))
+    (dired-hist--update t))
+  ;; debug
+  (if dired-hist-debug (dired-hist-debug-print "Go-Forward")))
 
 (defun dired-hist--visit (item)
   "Visit Dired buffer or directory specified in ITEM.
@@ -211,6 +233,50 @@ ITEM is a cons cell in form of (marker . directory-path)."
             ;; else create new buffer
             (dired (cdr item)))))))
 
+
+(defun dired-hist-kill-buffer-hook ()
+  "Remove first found current buffer from stacks in steps:
+1) Try to find current buffer in hist stack
+2) try to find current buffer in forward stack
+Additional just in case:
+3) try to find path in hist stack
+4) try to find path in forward stack"
+  (if (and (eq major-mode 'dired-mode) (null dired-kill-when-opening-new-dired-buffer))
+      (let ((cb (current-buffer))
+            (new-stack)
+            (item))
+        ;; 1) clear hist stack
+        (setq new-stack
+              (seq-remove (lambda (x)
+                            (eq cb (marker-buffer (car x))))
+                            dired-hist-stack))
+        ;; if length did not changed - clear forward stack
+        (if (not (eq (length new-stack) (length dired-hist-stack)))
+            ;; then apply new-stack
+            (setq dired-hist-stack new-stack)
+          ;; else 2)
+          (print "2)")
+          (setq new-stack
+                (seq-remove (lambda (x)
+                              (eq cb (marker-buffer (car x))))
+                            dired-hist-forward-stack))
+          ;; if length did not changed - remove path
+          (if (not (eq (length new-stack) (length dired-hist-forward-stack)))
+              ;; then apply new-stack
+              (setq dired-hist-forward-stack new-stack)
+            ;; else - 3) remove path from hist stack
+            (print "3)")
+            (setq item (copy (rassoc default-directory dired-hist-stack)))
+            (if item
+                (setq dired-hist-stack (remove item dired-hist-stack))
+              ;; else - 4) remove path from hist stack
+              (print "4)")
+              (setq item (copy (rassoc default-directory dired-hist-forward-stack)))
+              (if item
+                  (setq dired-hist-stack (remove item dired-hist-forward-stack)) ;
+              )))))))
+
+
 ;; require (emacs 29.1)
 ;; (defvar-keymap dired-hist-map
 ;;   "C-M-a" #'dired-hist-go-back
@@ -231,7 +297,9 @@ ITEM is a cons cell in form of (marker . directory-path)."
         (if (eq major-mode 'dired-mode)
             (dired-hist--update t))
         ;; if mode activated globally
-        (add-hook 'dired-mode-hook #'dired-hist--update))
+        (add-hook 'dired-mode-hook #'dired-hist--update)
+        (if (null dired-kill-when-opening-new-dired-buffer)
+            (add-hook 'kill-buffer-hook #'dired-hist-kill-buffer-hook)))
     ;; else
     (remove-hook 'dired-mode-hook #'dired-hist--update)
     (setq dired-hist-stack nil

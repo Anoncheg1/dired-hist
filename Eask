@@ -1,5 +1,5 @@
 (package "dired-hist"
-         "0.11"
+         "0.12"
          "Traverse Dired buffer history: back, forward")
 
 (website-url "https://github.com/Anoncheg1/dired-hist")
