@@ -85,6 +85,9 @@
 ;; - When we change buffer manually history stay the same.
 ;; - if we changed manually buffer and go back we don't add it to
 ;;   stack.
+;; - in t `dired-kill-when-opening-new-dired-buffer' mode another will
+;;   be deleted with `dired-hist-go-back' command at the end of the
+;;   history stack.
 
 ;;; Change Log:
 
@@ -121,7 +124,7 @@
   (if dired-hist-debug
       (setq dired-hist-debug nil)
     ;; else
-    (setq dired-hist-debug t)
+
     (when (eq (length (window-list)) 1)
       (let ((cw (selected-window))
             (w-messages (split-window-horizontally))
@@ -131,7 +134,8 @@
         (call-interactively #'end-of-buffer)
         (select-window w-buffers)
         (buffer-menu)
-        (select-window cw))))
+        (select-window cw)))
+    (setq dired-hist-debug t))
   (print (list "dired-hist-debug" dired-hist-debug)))
 
 (defun dired-hist-debug-print (&optional where)
@@ -145,12 +149,14 @@
   (cl-loop for b in dired-hist-forward-stack
            do (print b))
   ;; force wrap of messages to bottom and update buffers list
-  (let ((cw (current-buffer)))
+  (let ((cb (current-buffer)))
     (switch-to-buffer "*Buffer List*")
-    (buffer-menu)
+    (revert-buffer)
+    (switch-to-buffer cb)
+
     (switch-to-buffer "*Messages*")
     (call-interactively #'end-of-buffer)
-    (switch-to-buffer cw)))
+    (switch-to-buffer cb)))
 
 ;; ----
 
@@ -229,7 +235,7 @@ ITEM is a cons cell in form of (marker . directory-path)."
              ;; (dired-noselect (cdr item)) ; (expand-file-name (cdr item))
              ;; (dired--find-possibly-alternative-file (cdr item)) ; depend on (emacs "28.1")
              ;; (dired--find-file #'find-alternate-file (cdr item)) ; depend on (emacs "28.1")
-             (find-alternate-file (cdr item))
+             (find-alternate-file (cdr item)) ; may remove buffer
             ;; else create new buffer
             (dired (cdr item)))))))
 
