@@ -93,7 +93,8 @@
 ;;   stack.
 ;; Special case for t `dired-kill-when-opening-new-dired-buffer':
 ;; If two buffer opened: another will be deleted with
-;;   `dired-hist-go-back' command at the end of the history stack.
+;;   `dired-hist-go-back' command at the end of the history stack by
+;;   `find-alternate-file'.
 
 ;;; Change Log:
 
