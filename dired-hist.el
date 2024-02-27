@@ -38,6 +38,12 @@
 ;; `dired-hist-go-back'    : Go back in Dired history
 ;; `dired-hist-go-forward' : Go forward in Dired history
 
+;; Features:
+
+;; - supported for two Dired modes: open folder in new buffer or in the same (dired-kill-when-opening-new-dired-buffer)
+;; - if buffer is closed we remove his record from history
+;; - history is global
+
 ;; Configuration:
 
 ;; (require 'dired-hist)
@@ -45,7 +51,7 @@
 ;; (define-key dired-mode-map (kbd "l") #'dired-hist-go-back)
 ;; (define-key dired-mode-map (kbd "r") #'dired-hist-go-forward)
 
-;; I use "C-M-a" and "C-M-e" instead.
+;; Consider instead "C-M-a" and "C-M-e".
 
 ;; Customization:
 
@@ -85,9 +91,9 @@
 ;; - When we change buffer manually history stay the same.
 ;; - if we changed manually buffer and go back we don't add it to
 ;;   stack.
-;; - in t `dired-kill-when-opening-new-dired-buffer' mode another will
-;;   be deleted with `dired-hist-go-back' command at the end of the
-;;   history stack.
+;; Special case for t `dired-kill-when-opening-new-dired-buffer':
+;; If two buffer opened: another will be deleted with
+;;   `dired-hist-go-back' command at the end of the history stack.
 
 ;;; Change Log:
 

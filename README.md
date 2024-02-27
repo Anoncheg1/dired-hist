@@ -7,6 +7,11 @@ Add two commands: "back" and "forward". As buttons in every modern file managers
 
 Emacs Minor mode for Dired built-in file manager, that traverse buffer history (or just path) according to history.
 
+# Features
+- supported for two Dired modes: open folder in new buffer or in the same (dired-kill-when-opening-new-dired-buffer)
+- if buffer is closed we remove his record from history
+- history is global
+
 # Configuration
 
 ``` elisp
@@ -18,4 +23,4 @@ Emacs Minor mode for Dired built-in file manager, that traverse buffer history (
 ```
 Note: **l** and **r** keys are the defaults for **info-mode**, **help-mode** and **eww**, as well as for external packages like **pdf-tools**.
 
-I use "C-M-a" and "C-M-e" instead.
+Consider instead "C-M-a" and "C-M-e".
