@@ -40,7 +40,8 @@
 
 ;; Features:
 
-;; - supported for two Dired modes: open folder in new buffer or in the same (dired-kill-when-opening-new-dired-buffer)
+;; - supported for  two Dired modes: open  folder in new buffer  or in
+;;   the same (dired-kill-when-opening-new-dired-buffer)
 ;; - if buffer is closed we remove his record from history
 ;; - history is global
 
@@ -146,7 +147,8 @@
   (print (list "dired-hist-debug:" dired-hist-debug)))
 
 (defun dired-hist-debug-print (&optional where)
-  "Debug."
+  "Debuggin output to *Messages* buffer.
+Optional argument WHERE is a string to output firstly."
   (if where
       (print (concat "print at " where)))
   (print "hist stack:")
@@ -246,7 +248,7 @@ ITEM is a cons cell in form of (marker . directory-path)."
 
 
 (defun dired-hist-kill-buffer-hook ()
-  "Remove first found current buffer from stacks in steps:
+  "Remove first found current buffer from stacks in step:
 1) Try to find current buffer in hist stack
 2) try to find current buffer in forward stack
 Additional just in case:
@@ -266,7 +268,6 @@ Additional just in case:
             ;; then apply new-stack
             (setq dired-hist-stack new-stack)
           ;; else 2)
-          (print "2)")
           (setq new-stack
                 (seq-remove (lambda (x)
                               (eq cb (marker-buffer (car x))))
@@ -276,13 +277,11 @@ Additional just in case:
               ;; then apply new-stack
               (setq dired-hist-forward-stack new-stack)
             ;; else - 3) remove path from hist stack
-            (print "3)")
-            (setq item (copy (rassoc default-directory dired-hist-stack)))
+            (setq item (rassoc default-directory dired-hist-stack))
             (if item
                 (setq dired-hist-stack (remove item dired-hist-stack))
               ;; else - 4) remove path from hist stack
-              (print "4)")
-              (setq item (copy (rassoc default-directory dired-hist-forward-stack)))
+              (setq item (rassoc default-directory dired-hist-forward-stack))
               (if item
                   (setq dired-hist-stack (remove item dired-hist-forward-stack)) ;
               )))))))
