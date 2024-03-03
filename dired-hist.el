@@ -190,9 +190,7 @@ command to prevent removing of forward stack."
 (defun dired-hist-go-back ()
   "Transfer element from hist-stack to forward-stack."
   (interactive)
-  ;; 1) update
-  ;; (dired-hist--update) ; used only when buffer was canged manually
-  ;; 2) Transfer element from hist-stack to forward-stack.
+  ;; Transfer element from hist-stack to forward-stack.
   ;; we should remove element from dired-hist-stack if doesn't nil
   ;; and have at least 2 elements.
   ;; (when (>= (proper-list-p dired-hist-stack) 2) ; depend on (emacs "27.1")
@@ -295,7 +293,8 @@ Additional just in case:
 
 ;;;###autoload
 (define-minor-mode dired-hist-mode
-  "Keep track of visited Dired buffers and switch between them."
+  "Provide history commands for visited directories.
+Keep track of visited Dired buffers and switch between them."
   :group 'dired-hist
   :global t
   :lighter nil
