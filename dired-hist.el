@@ -5,7 +5,7 @@
 ;; Author: Anoncheg1
 ;;      Karthik Chikmagalur <karthik.chikmagalur@gmail.com>
 ;; Created: 2022
-;; Version: 0.12
+;; Version: 0.13
 ;; Package-Requires: ((emacs "26.1"))
 ;; Keywords: convenience, dired, history
 ;; URL: https://github.com/Anoncheg1/dired-hist
