@@ -143,18 +143,16 @@
         (buffer-menu)
         (select-window cw)))
     (setq dired-hist-debug t))
-  (print (list "dired-hist-debug" dired-hist-debug)))
+  (print (list "dired-hist-debug:" dired-hist-debug)))
 
 (defun dired-hist-debug-print (&optional where)
   "Debug."
   (if where
       (print (concat "print at " where)))
   (print "hist stack:")
-  (cl-loop for b in dired-hist-stack
-           do (print b))
+  (mapc #'print dired-hist-stack)
   (print "forward stack:")
-  (cl-loop for b in dired-hist-forward-stack
-           do (print b))
+  (mapc #'print dired-hist-forward-stack)
   ;; force wrap of messages to bottom and update buffers list
   (let ((cb (current-buffer)))
     (switch-to-buffer "*Buffer List*")
