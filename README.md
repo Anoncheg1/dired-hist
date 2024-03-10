@@ -24,3 +24,7 @@ Emacs Minor mode for Dired built-in file manager, that traverse buffer history (
 Note: **l** and **r** keys are the defaults for **info-mode**, **help-mode** and **eww**, as well as for external packages like **pdf-tools**.
 
 Consider instead "C-M-a" and "C-M-e".
+
+# Other packages with own history implementation
+- diredc - diredc-history-mode - Midnight Commander features (plus) for dired
+- dirvish - extensions/dirvish-history.el - A modern file manager based on dired mode
