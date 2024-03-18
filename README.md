@@ -29,6 +29,23 @@ Consider instead "C-M-a" and "C-M-e".
 - simplify code, but raise required Emacs version. (26.1 for now)
 - New feature: Allow to show history with help of tab-line-mode for ```dired-kill-when-opening-new-dired-buffer``` with t
 
+# Alternative implementation based on tab-line-mode
+Pros:
+- less code
+- history is visible in tabs
+Cons
+- support for only ```dired-kill-when-opening-new-dired-buffer``` is nil.
+- tab-line modified globally for now
+
+## Configuration for alternative implementation
+
+``` elisp
+(require 'dired-hist-tl)
+(add-hook 'dired-mode-hook #'dired-hist-tl-dired-mode-hook)
+(define-key dired-mode-map (kbd "RET") #'dired-hist-tl-dired-find-file)
+(global-set-key (kbd "l") #'tab-line-switch-to-prev-tab)
+(global-set-key (kbd "r") #'tab-line-switch-to-next-tab)
+```
 
 # Other packages with own history implementation
 - diredc - diredc-history-mode - Midnight Commander features (plus) for dired

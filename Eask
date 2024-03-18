@@ -1,6 +1,6 @@
 (package "dired-hist"
          "0.13"
-         "Traverse Dired buffer history: back, forward")
+         "Traverse Dired buffer's history: back, forward")
 
 (website-url "https://github.com/Anoncheg1/dired-hist")
 (keywords "convenience" "dired" "history")

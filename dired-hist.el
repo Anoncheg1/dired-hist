@@ -1,4 +1,4 @@
-;;; dired-hist.el --- Traverse Dired buffer history: back, forward -*- lexical-binding: t -*-
+;;; dired-hist.el --- Traverse Dired buffer's history: back, forward -*- lexical-binding: t -*-
 ;; Copyright (C) 2024  Anoncheg1
 ;; Copyright (C) 2022  Karthik Chikmagalur
 
@@ -57,6 +57,20 @@
 ;; Customization:
 
 ;; There are no customization options at this time.
+
+;; There is alternative implementation based on tab-line-mode.
+;; Pros: less code, history is visible in tabs
+;; Cons:
+;; - support for only ```dired-kill-when-opening-new-dired-buffer``` is nil.
+;; - tab-line modified globally for now
+
+;; Configuration for alternative implementation:
+
+;; (require 'dired-hist-tl)
+;; (add-hook 'dired-mode-hook #'dired-hist-tl-dired-mode-hook)
+;; (define-key dired-mode-map (kbd "RET") #'dired-hist-tl-dired-find-file)
+;; (global-set-key (kbd "l") #'tab-line-switch-to-prev-tab)
+;; (global-set-key (kbd "r") #'tab-line-switch-to-next-tab)
 
 ;; How it works:
 
