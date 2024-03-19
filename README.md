@@ -9,6 +9,8 @@ Adds two commands: "back" and "forward", as buttons in every modern file manager
 
 Emacs Minor mode for Dired built-in file manager, that traverse buffer history (or just path) according to history.
 
+Tested with Emacs 29.2.
+
 ## Features
 - supported for two Dired modes: open folder in new buffer or in the same (dired-kill-when-opening-new-dired-buffer)
 - if buffer is closed we remove his record from history
