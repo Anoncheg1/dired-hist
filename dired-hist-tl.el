@@ -28,7 +28,7 @@
 ;; `dired-kill-when-opening-new-dired-buffer' set to nil.  tab-line
 ;; allow to see history at top of the buffer, but creates buffer for
 ;; every new folder.
-;; Package-Requires: ((emacs "27.1"))
+;; Package-Requires emacs "27.1".
 
 ;; Commands:
 
