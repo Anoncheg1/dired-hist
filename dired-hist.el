@@ -32,7 +32,7 @@
 ;; them.  This is similar to the facility provided in Info, EWW and
 ;; in modern filemanagers.
 
-;; This package require emacs "26.1" actually, "27.1" reqqired by
+;; This package require Emacs "26.1" actually, "27.1" reqqired by
 ;; `dired-hist-tl'
 
 ;; Commands:

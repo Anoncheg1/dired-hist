@@ -28,7 +28,7 @@
 ;; `dired-kill-when-opening-new-dired-buffer' set to nil.  tab-line
 ;; allow to see history at top of the buffer, but creates buffer for
 ;; every new folder.
-;; Package-Requires emacs "27.1".
+;; Package-Requires Emacs "27.1".
 
 ;; Commands:
 
@@ -163,7 +163,7 @@ To use `dired-hist-tl-buffer-list-ordered' replacement for `buffer-list'."
                 (funcall tab-line-tabs-buffer-list-function))))
 
 (defun dired-hist-tl-dired-mode-hook ()
-  "Should be added to dired-mode-hook."
+  "Should be added to `dired-mode-hook'."
   ;; required and safe - it is here just to keep configuration simplier
   (add-hook 'buffer-list-update-hook #'dired-hist-tl-buffer-list-update-hook)
   ;; required to properly close tags at right when enter new directory
