@@ -3,7 +3,6 @@
 
 ;; Author: Anoncheg1
 ;; Version: 0.13
-;; Package-Requires: ((emacs "27.1"))
 ;; Keywords: convenience, dired, history
 ;; URL: https://github.com/Anoncheg1/dired-hist
 
@@ -29,6 +28,7 @@
 ;; `dired-kill-when-opening-new-dired-buffer' set to nil.  tab-line
 ;; allow to see history at top of the buffer, but creates buffer for
 ;; every new folder.
+;; Package-Requires: ((emacs "27.1"))
 
 ;; Commands:
 
@@ -72,9 +72,10 @@
 
 ;;; Code:
 (require 'tab-line)
+(require 'dired) ; for `dired-hist-tl-dired-find-file' only
 
 (defvar dired-hist-tl-buffer-list-ordered (buffer-list)
-  "Morror of `buffer-list' variable preserving order.")
+  "Mirror of `buffer-list' variable with preserving order.")
 
 (defun dired-hist-tl-close (buffer tab)
   "Close TAB with BUFFER, same as `tab-line-close-tab'."
@@ -117,8 +118,6 @@ and entered new folder."
                     (dired-hist-tl-close buffer tab)))))
         (force-mode-line-update)))
 
-
-
 (defun dired-hist-tl-sync-two-lists (l1 lbase)
   "Sync list LBASE elemets with L1, but preserve LBASE order.
 Steps:
@@ -141,13 +140,13 @@ Steps:
 ;; (if (not (equal (dired-hist-tl-sync-two-lists '(1 2 4 3) vv) '(1 3 4 2)))
 ;;     (error "Test failed for dired-hist-tl-sync-two-lists"))
 
-
 (defun dired-hist-tl-buffer-list-update-hook ()
   "Sync buffer-list-ordered with current `buffer-list'."
-  (setq dired-hist-tl-buffer-list-ordered (dired-hist-tl-sync-two-lists (buffer-list) dired-hist-tl-buffer-list-ordered))
+  (setq dired-hist-tl-buffer-list-ordered
+        (dired-hist-tl-sync-two-lists (buffer-list)
+                                      dired-hist-tl-buffer-list-ordered))
   ;; (print (mapcar 'buffer-name dired-hist-tl-buffer-list-ordered))
 )
-
 
 (defun dired-hist-tl-tabs-buffer-list ()
   "Replacement of `tab-line-tabs-buffer-list' function.
@@ -165,6 +164,8 @@ To use `dired-hist-tl-buffer-list-ordered' replacement for `buffer-list'."
 
 (defun dired-hist-tl-dired-mode-hook ()
   "Should be added to dired-mode-hook."
+  ;; required and safe - it is here just to keep configuration simplier
+  (add-hook 'buffer-list-update-hook #'dired-hist-tl-buffer-list-update-hook)
   ;; required to properly close tags at right when enter new directory
   (make-local-variable 'tab-line-close-tab-function)
   (setq tab-line-close-tab-function 'kill-buffer)
@@ -174,10 +175,6 @@ To use `dired-hist-tl-buffer-list-ordered' replacement for `buffer-list'."
   (make-local-variable 'tab-line-tabs-buffer-list-function)
   (setq tab-line-tabs-buffer-list-function #'dired-hist-tl-tabs-buffer-list)
   (tab-line-mode))
-;; safe
-(add-hook 'buffer-list-update-hook #'dired-hist-tl-buffer-list-update-hook)
-;; (advice-add 'tab-line-tabs-mode-buffers :override #'dired-hist-tl-tabs-mode-buffers )
-
 
 (defun dired-hist-tl-dired-find-file()
   "Close tabs to the right to clear forward history."

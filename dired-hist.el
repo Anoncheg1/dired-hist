@@ -6,7 +6,7 @@
 ;;      Karthik Chikmagalur <karthik.chikmagalur@gmail.com>
 ;; Created: 2022
 ;; Version: 0.13
-;; Package-Requires: ((emacs "26.1"))
+;; Package-Requires: ((emacs "27.1"))
 ;; Keywords: convenience, dired, history
 ;; URL: https://github.com/Anoncheg1/dired-hist
 
@@ -31,6 +31,9 @@
 ;; Dired buffers or paths and lets you go back and forwards across
 ;; them.  This is similar to the facility provided in Info, EWW and
 ;; in modern filemanagers.
+
+;; This package require emacs "26.1" actually, "27.1" reqqired by
+;; `dired-hist-tl'
 
 ;; Commands:
 

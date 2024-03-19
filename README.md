@@ -33,7 +33,8 @@ Consider instead "C-M-a" and "C-M-e".
 Pros:
 - less code
 - history is visible in tabs
-Cons
+
+Cons:
 - support for only ```dired-kill-when-opening-new-dired-buffer``` is nil.
 - tab-line modified globally for now
 
