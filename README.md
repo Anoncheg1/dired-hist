@@ -7,12 +7,12 @@ Adds two commands: "back" and "forward", as buttons in every modern file manager
 
 Emacs Minor mode for Dired built-in file manager, that traverse buffer history (or just path) according to history.
 
-# Features
+## Features
 - supported for two Dired modes: open folder in new buffer or in the same (dired-kill-when-opening-new-dired-buffer)
 - if buffer is closed we remove his record from history
 - history is global only for now
 
-# Configuration
+## Configuration
 
 ``` elisp
 (require 'dired-hist)
@@ -25,7 +25,7 @@ Note: **l** and **r** keys are the defaults for **info-mode**, **help-mode** and
 
 Consider instead "C-M-a" and "C-M-e".
 
-# TODO
+## TODO
 - simplify code, but raise required Emacs version. (26.1 for now)
 - New feature: Allow to show history with help of tab-line-mode for ```dired-kill-when-opening-new-dired-buffer``` with t
 
@@ -36,7 +36,6 @@ Pros:
 
 Cons:
 - support for only ```dired-kill-when-opening-new-dired-buffer``` is nil.
-- tab-line modified globally for now
 
 ## Configuration for alternative implementation
 
