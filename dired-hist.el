@@ -2,8 +2,8 @@
 ;; Copyright (C) 2024  Anoncheg1
 ;; Copyright (C) 2022  Karthik Chikmagalur
 
-;; Author: Anoncheg1
-;;      Karthik Chikmagalur <karthik.chikmagalur@gmail.com>
+;; Author: Karthik Chikmagalur <karthik.chikmagalur@gmail.com>
+;;      Anoncheg1
 ;; Created: 2022
 ;; Version: 0.13
 ;; Package-Requires: ((emacs "27.1"))
