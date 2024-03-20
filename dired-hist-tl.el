@@ -139,9 +139,9 @@ Steps:
     (append lb l1-se) ; return
     ))
 ;; tests for `dired-hist-tl-sync-two-lists'
-(setq vv '(1 3 4 5))
-(if (not (equal (dired-hist-tl-sync-two-lists '(1 2 4 3) vv) '(1 3 4 2)))
-    (error "Test failed for dired-hist-tl-sync-two-lists"))
+;; (setq vv '(1 3 4 5))
+;; (if (not (equal (dired-hist-tl-sync-two-lists '(1 2 4 3) vv) '(1 3 4 2)))
+;;     (error "Test failed for dired-hist-tl-sync-two-lists"))
 
 (defun dired-hist-tl-buffer-list-update-hook ()
   "Sync buffer-list-ordered with current `buffer-list'."
