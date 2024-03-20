@@ -48,8 +48,8 @@
 ;; (require 'dired-hist-tl)
 ;; (add-hook 'dired-mode-hook #'dired-hist-tl-dired-mode-hook)
 ;; (define-key dired-mode-map (kbd "RET") #'dired-hist-tl-dired-find-file)
-;; (global-set-key (kbd "l") #'tab-line-switch-to-prev-tab)
-;; (global-set-key (kbd "r") #'tab-line-switch-to-next-tab)
+;; (define-key dired-mode-map (kbd "l") #'tab-line-switch-to-prev-tab)
+;; (define-key dired-mode-map (kbd "r") #'tab-line-switch-to-next-tab)
 
 ;; Consider instead "C-M-a" and "C-M-e".
 
