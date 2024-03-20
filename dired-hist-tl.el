@@ -39,7 +39,9 @@
 
 ;; Features:
 
-;; - tabs are sorted in order of creation just as history
+;; - Tabs are sorted in order of creation just as history
+;; - When go up in directory tree you go back in history (if you don't
+;;   like it then make me know)
 
 ;; Configuration:
 

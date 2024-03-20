@@ -41,7 +41,12 @@ Pros:
 - history is visible in tabs
 
 Cons:
-- support for only ```dired-kill-when-opening-new-dired-buffer``` is nil.
+- support for only ```dired-kill-when-opening-new-dired-buffer``` is nil (default of Dired).
+- bound to Tab Line mode and harder to customize.
+
+## Featurs for alternative implementation
+- Tabs are sorted in order of creation just as history
+- When go up in directory tree you go back in history (if you don't like it then make me know)
 
 ## Configuration for alternative implementation
 
