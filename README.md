@@ -38,8 +38,9 @@ Consider instead "C-M-a" and "C-M-e".
 
 # Alternative implementation based on tab-line-mode
 Pros:
-- less code
+- simplier
 - history is visible in tabs
+- all buffers reused
 
 Cons:
 - support for only ```dired-kill-when-opening-new-dired-buffer``` is nil (default of Dired).
