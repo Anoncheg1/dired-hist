@@ -63,3 +63,6 @@ Cons:
 # Other packages with own history implementation
 - diredc - diredc-history-mode - Midnight Commander features (plus) for dired
 - dirvish - extensions/dirvish-history.el - A modern file manager based on dired mode
+
+# Alternative implementation screenshot
+![Demo](https://github.com/Anoncheg1/public-share/blob/main/Dired-hist.png)
