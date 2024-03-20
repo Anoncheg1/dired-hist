@@ -39,7 +39,7 @@
 
 ;; Features:
 
-;; - History showed with tabs in every dired window
+;; - History showed with tabs in every Dired window
 ;; - Tabs are sorted in order of creation, just as history
 ;; - Compatible with `global-tab-line-mode'
 ;; - going back and up carefully programmed
@@ -67,7 +67,7 @@
 ;; switch between opened buffers with functions
 ;; `tab-line-switch-to-prev-tab' and `tab-line-switch-to-next-tab'.
 ;; After we switch to prev-tab we need to close buffers at right, we
-;; add this function as `dired-hist-tl-dired-find-file'. Another issue
+;; add this function as `dired-hist-tl-dired-find-file'.  Another issue
 ;; is that buffer list is not in history order, we create copy of
 ;; buffer list as variable `dired-hist-tl-buffer-list-ordered' and
 ;; synchrinize with original list but preserve order.
@@ -83,8 +83,8 @@
   "Mirror of `buffer-list' variable with preserving order.")
 
 (defun dired-hist-tl-go-up (history buffer-up buffer-current)
-  "Move buffer BUFFER in place of CURRENT-BUFFER in HISTORY list.
-In place after of CURRENT-BUFFER."
+  "Move buffer BUFFER in place of BUFFER-CURRENT in HISTORY list.
+Argument BUFFER-UP buffer that will be moved in front of BUFFER-CURENT."
   (let ((h (seq-copy history))
         (p)) ; to protect argument
         (setq h (delq buffer-up h))
@@ -222,7 +222,8 @@ When when"
 By default when we go up and if buffer exist we go backward.
 Instead of that we reuse buffer and move buffer to the top of
 history or in case we are in the middle of history to the place
-of current buffer."
+of current buffer.
+Optional argument OTHER-WINDOW dired-up-directory original argument."
   (interactive "P")
   ;; steps
   ;; 1) check if up folder exist as buffer
