@@ -38,9 +38,8 @@ Consider instead "C-M-a" and "C-M-e".
 
 # Alternative implementation based on tab-line-mode
 Pros:
-- simplier
 - history is visible in tabs
-- all buffers reused
+- relatively simplier
 
 Cons:
 - support for only ```dired-kill-when-opening-new-dired-buffer``` is nil (default of Dired).
@@ -56,6 +55,7 @@ Cons:
 (require 'dired-hist-tl)
 (add-hook 'dired-mode-hook #'dired-hist-tl-dired-mode-hook)
 (define-key dired-mode-map (kbd "RET") #'dired-hist-tl-dired-find-file)
+(define-key dired-mode-map (kbd "^") #'dired-hist-tl-dired-up-directory)
 (define-key dired-mode-map (kbd "l") #'tab-line-switch-to-prev-tab)
 (define-key dired-mode-map (kbd "r") #'tab-line-switch-to-next-tab)
 ```
