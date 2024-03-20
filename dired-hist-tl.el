@@ -78,12 +78,13 @@
   "Mirror of `buffer-list' variable with preserving order.")
 
 (defun dired-hist-tl-close (buffer tab)
-  "Close TAB with BUFFER, same as `tab-line-close-tab'."
+  "Close TAB with BUFFER, same as `tab-line-close-tab'.
+Not bound to mouse event, accept BUFFER and TAB which as the same.
+Depending on `tab-line-close-tab-function' BUFFER or TAB are used."
   (cond
    ((eq tab-line-close-tab-function 'kill-buffer) ;; used
     (kill-buffer buffer))
    ((eq tab-line-close-tab-function 'bury-buffer)
-    ;; (print "asd")
     (if (eq buffer (current-buffer))
         (bury-buffer)
       (set-window-prev-buffers nil (assq-delete-all buffer (window-prev-buffers)))
@@ -119,22 +120,22 @@ and entered new folder."
         (force-mode-line-update)))
 
 (defun dired-hist-tl-sync-two-lists (l1 lbase)
-  "Sync list LBASE elemets with L1, but preserve LBASE order.
+  "Return L1 elemets ordered as same elements of LBASE.
+L1 (buffer-list) provides elements, LBASE provides order.
 Steps:
   1) remove elements of lbase that don't exist in l1
   1.1 find elemets of lbase that not member of l1
-  1.2 remove 1.1 from  lbase
+  1.2 remove 1.1 from lbase
   2) l1-se = find elements of l1 that don't exist in lbase
   3) add to lbase l1-se)"
   ;; 1)
-  (let ((bl l1))
-    ;; 1.1
-    (let ((lbase-se (seq-filter (lambda (x) (not (member x bl)))  lbase)))
-      (mapc (lambda (x) (delq x lbase)) lbase-se)) ; 1.2
-    ;; 2)
-    (let ((l1-se (seq-filter (lambda (x) (not (member x lbase))) bl)))
-      (append lbase l1-se) ; return
-      )))
+  ;; 1.1
+  (let ((lbase-se (seq-filter (lambda (x) (not (member x l1)))  lbase)))
+    (mapc (lambda (x) (delq x lbase)) lbase-se)) ; 1.2
+  ;; 2)
+  (let ((l1-se (seq-filter (lambda (x) (not (member x lbase))) l1)))
+    (append lbase l1-se) ; return
+    ))
 ;; tests for `dired-hist-tl-sync-two-lists'
 ;; (setq vv '(1 3 4 5))
 ;; (if (not (equal (dired-hist-tl-sync-two-lists '(1 2 4 3) vv) '(1 3 4 2)))
@@ -156,7 +157,8 @@ To use `dired-hist-tl-buffer-list-ordered' replacement for `buffer-list'."
               dired-hist-tl-buffer-list-ordered))
 
 (defun dired-hist-tl-tabs-mode-buffers ()
-  "Return a list of buffers with the same major mode as the current buffer."
+  "Function to get a list of tabs to display in the tab line.
+Return a list of buffers with the same major mode as the current buffer."
   (let ((mode major-mode))
     (seq-filter (lambda (b) (with-current-buffer b
                               (derived-mode-p mode)))
