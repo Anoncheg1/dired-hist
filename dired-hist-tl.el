@@ -43,6 +43,7 @@
 ;; - Tabs are sorted in order of creation, just as history
 ;; - Compatible with `global-tab-line-mode'
 ;; - going back and up carefully programmed
+;; - working under root console (theme modus-vivendi)
 
 ;; Configuration:
 

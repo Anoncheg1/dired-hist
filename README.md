@@ -46,8 +46,11 @@ Cons:
 - bound to Tab Line mode and harder to customize.
 
 ## Featurs for alternative implementation
-- Tabs are sorted in order of creation just as history
-- When go up in directory tree you go back in history (if you don't like it then make me know)
+- History showed with tabs in every Dired window
+- Tabs are sorted in order of creation, just as history
+- Compatible with ```global-tab-line-mode```
+- going back and up carefully programmed
+- working under root console and terminal (theme modus-vivendi)
 
 ## Configuration for alternative implementation
 
