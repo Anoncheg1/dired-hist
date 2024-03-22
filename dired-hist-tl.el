@@ -35,7 +35,6 @@
 ;; `tab-line-switch-to-prev-tab' : Go back in Dired history
 ;; `tab-line-switch-to-next-tab' : Go forward in Dired history
 ;; `dired-hist-tl-dired-find-file' : Enter directory and clear forward
-;; history
 
 ;; Features:
 
@@ -53,7 +52,10 @@
 ;; (define-key dired-mode-map (kbd "^") #'dired-hist-tl-dired-up-directory)
 ;; (define-key dired-mode-map (kbd "l") #'tab-line-switch-to-prev-tab)
 ;; (define-key dired-mode-map (kbd "r") #'tab-line-switch-to-next-tab)
-
+;;
+;; For better compatibility with `global-tab-line-mode' add:
+;; (advice-add 'tab-line-switch-to-prev-tab :override #'dired-hist-tl-tab-line-switch-to-prev-tab)
+;; (advice-add 'tab-line-switch-to-next-tab :override #'dired-hist-tl-tab-line-switch-to-next-tab)
 
 ;; Consider instead "C-M-a" and "C-M-e".
 
@@ -80,10 +82,10 @@
 (require 'tab-line)
 (require 'dired) ; for `dired-hist-tl-dired-find-file' only
 
-(defvar dired-hist-tl-history nil
+(defvar dired-hist-tl--history nil
   "Mirror of `buffer-list' variable with preserving order.")
 
-(defun dired-hist-tl-go-up (history buffer-up buffer-current)
+(defun dired-hist-tl--go-up (history buffer-up buffer-current)
   "Move buffer BUFFER in place of BUFFER-CURRENT in HISTORY list.
 Argument BUFFER-UP buffer that will be moved in front of BUFFER-CURENT."
   (let ((h (seq-copy history))
@@ -91,17 +93,17 @@ Argument BUFFER-UP buffer that will be moved in front of BUFFER-CURENT."
         (setq h (delq buffer-up h))
         (setq p (1+ (seq-position h buffer-current)))
         (append (seq-take h p) (list buffer-up) (seq-drop h p))))
-;; -- tests `dired-hist-tl-go-up'
+;; -- tests `dired-hist-tl--go-up'
 ;; (setq a '(1 2 3 4))
-;; (if (not (equal (dired-hist-tl-go-up a 2 3) '(1 3 2 4)))
+;; (if (not (equal (dired-hist-tl--go-up a 2 3) '(1 3 2 4)))
 ;;     (error "Test failed for dired-hist-tl-sync-two-lists"))
-;; (if (not (equal (dired-hist-tl-go-up a 2 4) '(1 3 4 2)))
+;; (if (not (equal (dired-hist-tl--go-up a 2 4) '(1 3 4 2)))
 ;;     (error "Test failed for dired-hist-tl-sync-two-lists"))
-;; (if (not (equal (dired-hist-tl-go-up a 4 2) '(1 2 4 3)))
+;; (if (not (equal (dired-hist-tl--go-up a 4 2) '(1 2 4 3)))
 ;;     (error "Test failed for dired-hist-tl-sync-two-lists"))
 
 
-(defun dired-hist-tl-sync-two-lists (l1 lbase)
+(defun dired-hist-tl--sync-two-lists (l1 lbase)
   "Return L1 elemets ordered as same elements of LBASE.
 L1 (buffer-list) provides elements, LBASE (history) provides order.
 Steps:
@@ -120,14 +122,14 @@ Steps:
     (setq l1-se (seq-filter (lambda (x) (not (member x lb))) l1))
     (append lb l1-se) ; return
     ))
-;; -- tests for `dired-hist-tl-sync-two-lists'
+;; -- tests for `dired-hist-tl--sync-two-lists'
 ;; (setq vv '(1 3 4 5))
-;; ;; (dired-hist-tl-sync-two-lists '(10 1 4 3) vv)
-;; (if (not (equal (dired-hist-tl-sync-two-lists '(1 2 4 3) vv) '(1 3 4 2)))
-;;     (error "Test failed for dired-hist-tl-sync-two-lists"))
+;; ;; (dired-hist-tl--sync-two-lists '(10 1 4 3) vv)
+;; (if (not (equal (dired-hist-tl--sync-two-lists '(1 2 4 3) vv) '(1 3 4 2)))
+;;     (error "Test failed for dired-hist-tl--sync-two-lists"))
 
 
-(defun dired-hist-tl-close (buffer tab)
+(defun dired-hist-tl--close (buffer tab)
   "Close TAB with BUFFER, same as `tab-line-close-tab'.
 Not bound to mouse event, accept BUFFER and TAB which are the same.
 Depending on `tab-line-close-tab-function' BUFFER or TAB are used."
@@ -164,24 +166,24 @@ and entered new folder."
               (dolist (tab tabs-right)
                 (setq buffer (if (bufferp tab) tab (cdr (assq 'buffer tab))))
                 (if (bufferp buffer)
-                    (dired-hist-tl-close buffer tab)))))
+                    (dired-hist-tl--close buffer tab)))))
         (force-mode-line-update)))
 
 (defun dired-hist-tl-buffer-list-update-hook ()
   "Sync buffer-list-ordered with current `buffer-list'."
-  (setq dired-hist-tl-history
-        (dired-hist-tl-sync-two-lists ; call
+  (setq dired-hist-tl--history
+        (dired-hist-tl--sync-two-lists ; call
          (seq-filter (lambda (b) (with-current-buffer b ; arg1
                                    (derived-mode-p 'dired-mode))) (buffer-list))
-         dired-hist-tl-history)) ; arg2
+         dired-hist-tl--history)) ; arg2
   )
 
 (defun dired-hist-tl-tabs-buffer-list ()
   "Replacement of `tab-line-tabs-buffer-list' function.
-To use `dired-hist-tl-history' replacement for `buffer-list'."
+To use `dired-hist-tl--history' replacement for `buffer-list'."
   (seq-filter (lambda (b) (and (buffer-live-p b)
                                (/= (aref (buffer-name b) 0) ?\s)))
-              dired-hist-tl-history))
+              dired-hist-tl--history))
 
 (defun dired-hist-tl-tabs-mode-buffers ()
   "Function to get a list of tabs to display in the tab line.
@@ -221,18 +223,6 @@ Conflict with `global-tab-line-mode'."
   (setq tab-line-tabs-buffer-list-function #'dired-hist-tl-tabs-buffer-list)
   (tab-line-mode))
 
-;; (defun dired-hist-tl-global-tab-line-safe-hook ()
-;;   "Activation hook, safe for `global-tab-line-mode'."
-;;   (if (not (or (eq last-command #'tab-line-switch-to-prev-tab) (eq last-command #'tab-line-switch-to-next-tab)))
-;;       (dired-hist-tl-dired-mode-hook)
-;;     ;; else
-;;     ;; (print "kill")
-
-;;     ;; (kill-local-variable tab-line-close-tab-function)
-;;     ;; (kill-local-variable tab-line-tabs-function)
-;;     ;; (kill-local-variable tab-line-tabs-buffer-list-function)
-;;     ))
-
 (defun dired-hist-tl-dired-find-file()
   "Close tabs to the right to clear forward history.
 When when"
@@ -240,11 +230,11 @@ When when"
   (dired-hist-tl-kill-right-tabs)
   (dired-find-file)
   ;; move current buffer to the front of history
-  (if (not (eq (current-buffer) (car (last dired-hist-tl-history))))
-    (setq dired-hist-tl-history
-          (dired-hist-tl-go-up dired-hist-tl-history
+  (if (not (eq (current-buffer) (car (last dired-hist-tl--history))))
+    (setq dired-hist-tl--history
+          (dired-hist-tl--go-up dired-hist-tl--history
                                (current-buffer)
-                               (car (last dired-hist-tl-history))))))
+                               (car (last dired-hist-tl--history))))))
 
 (defun dired-hist-tl-dired-up-directory (&optional other-window)
   "Fix case when upper folder exist in history.
@@ -261,11 +251,25 @@ Optional argument OTHER-WINDOW dired-up-directory original argument."
   (let* ((dir (dired-current-directory))
          (up-path (file-name-directory (directory-file-name dir)))
          (up-buffer (car-safe (dired-buffers-for-dir up-path))))
-    ;; (print (list "debug" dir up-path up-buffer dired-hist-tl-history))
+    ;; (print (list "debug" dir up-path up-buffer dired-hist-tl--history))
     (if (and (not (equal dir up-path)) up-buffer)
-        (setq dired-hist-tl-history
-              (dired-hist-tl-go-up dired-hist-tl-history up-buffer (current-buffer)))))
+        (setq dired-hist-tl--history
+              (dired-hist-tl--go-up dired-hist-tl--history up-buffer (current-buffer)))))
   (dired-up-directory other-window))
+
+(defun dired-hist-tl-tab-line-switch-to-prev-tab (&optional event)
+  "Replacement for `tab-line-switch-to-prev-tab'.
+For better compatibility with `global-tab-line-mode'."
+  (interactive (list last-nonmenu-event))
+  (let ((window (and (listp event) (posn-window (event-start event)))))
+    (switch-to-prev-buffer window)))
+
+(defun dired-hist-tl-tab-line-switch-to-next-tab (&optional event)
+  "Replacement for `tab-line-switch-to-next-tab'.
+For better compatibility with `global-tab-line-mode'."
+  (interactive (list last-nonmenu-event))
+  (let ((window (and (listp event) (posn-window (event-start event)))))
+    (switch-to-next-buffer window)))
 
 (provide 'dired-hist-tl)
 ;;; dired-hist-tl.el ends here

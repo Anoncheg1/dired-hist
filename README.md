@@ -40,6 +40,7 @@ Consider instead "C-M-a" and "C-M-e".
 Pros:
 - history is visible in tabs
 - relatively simplier
+- allow to to use two keys ("prev", "next") to switch between history and all tabs.
 
 Cons:
 - support for only ```dired-kill-when-opening-new-dired-buffer``` is nil (default of Dired).
@@ -62,6 +63,12 @@ Cons:
 (define-key dired-mode-map (kbd "^") #'dired-hist-tl-dired-up-directory)
 (define-key dired-mode-map (kbd "l") #'tab-line-switch-to-prev-tab)
 (define-key dired-mode-map (kbd "r") #'tab-line-switch-to-next-tab)
+```
+
+For better compatibility with `global-tab-line-mode' add:
+``` elisp
+(advice-add 'tab-line-switch-to-prev-tab :override #'dired-hist-tl-tab-line-switch-to-prev-tab)
+(advice-add 'tab-line-switch-to-next-tab :override #'dired-hist-tl-tab-line-switch-to-next-tab)
 ```
 
 # Other packages with own history implementation
