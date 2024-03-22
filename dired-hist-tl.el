@@ -185,7 +185,7 @@ To use `dired-hist-tl--history' replacement for `buffer-list'."
                                (/= (aref (buffer-name b) 0) ?\s)))
               dired-hist-tl--history))
 
-(defun dired-hist-tl-tabs-mode-buffers ()
+(defun dired-hist-tl--tabs-mode-buffers ()
   "Function to get a list of tabs to display in the tab line.
 Return a list of buffers with the same major mode as the current buffer."
   (let ((mode major-mode))
@@ -194,7 +194,7 @@ Return a list of buffers with the same major mode as the current buffer."
                 (funcall tab-line-tabs-buffer-list-function))))
 
 (defun dired-hist-tl-tabs-mode-buffers-safe ()
-  "Wrapper for `dired-hist-tl-tabs-mode-buffers'.
+  "Wrapper for `dired-hist-tl--tabs-mode-buffers'.
 That is safe for `global-tab-line-mode'."
   ;; if previous command was switch tab
   (if (and (or (eq last-command #'tab-line-switch-to-prev-tab) (eq last-command #'tab-line-switch-to-next-tab))
@@ -204,7 +204,7 @@ That is safe for `global-tab-line-mode'."
       ;; we display tabs using global function
       (funcall (default-value 'tab-line-tabs-function))
     ;; else
-    (dired-hist-tl-tabs-mode-buffers)))
+    (dired-hist-tl--tabs-mode-buffers)))
 
 (defun dired-hist-tl-dired-mode-hook ()
   "Activation hook, that should be added to `dired-mode-hook'.
@@ -218,7 +218,7 @@ Conflict with `global-tab-line-mode'."
   ;; required to properly close tags at right when enter new directory
   (setq tab-line-close-tab-function 'kill-buffer)
   ;; used to create tabs list
-  ;; safe version of dired-hist-tl-tabs-mode-buffers
+  ;; safe version of dired-hist-tl--tabs-mode-buffers
   (setq tab-line-tabs-function #'dired-hist-tl-tabs-mode-buffers-safe)
   (setq tab-line-tabs-buffer-list-function #'dired-hist-tl-tabs-buffer-list)
   (tab-line-mode))
