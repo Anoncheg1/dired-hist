@@ -259,14 +259,16 @@ Optional argument OTHER-WINDOW dired-up-directory original argument."
 
 (defun dired-hist-tl-tab-line-switch-to-prev-tab (&optional event)
   "Replacement for `tab-line-switch-to-prev-tab'.
-For better compatibility with `global-tab-line-mode'."
+For better compatibility with `global-tab-line-mode'.
+Optional argument EVENT argument of original function."
   (interactive (list last-nonmenu-event))
   (let ((window (and (listp event) (posn-window (event-start event)))))
     (switch-to-prev-buffer window)))
 
 (defun dired-hist-tl-tab-line-switch-to-next-tab (&optional event)
   "Replacement for `tab-line-switch-to-next-tab'.
-For better compatibility with `global-tab-line-mode'."
+For better compatibility with `global-tab-line-mode'.
+Optional argument EVENT argument of original function."
   (interactive (list last-nonmenu-event))
   (let ((window (and (listp event) (posn-window (event-start event)))))
     (switch-to-next-buffer window)))
