@@ -41,9 +41,9 @@
 
 ;; - History showed with tabs in every Dired window
 ;; - Tabs are sorted in order of creation, just as history
-;; - Compatible with `global-tab-line-mode'
 ;; - going back and up carefully programmed
 ;; - working under root console (theme modus-vivendi)
+;; - Compatible with `global-tab-line-mode'
 
 ;; Configuration:
 
@@ -191,19 +191,47 @@ Return a list of buffers with the same major mode as the current buffer."
                               (derived-mode-p mode)))
                 (funcall tab-line-tabs-buffer-list-function))))
 
+(defun dired-hist-tl-tabs-mode-buffers-safe ()
+  "Wrapper for `dired-hist-tl-tabs-mode-buffers'.
+That is safe for `global-tab-line-mode'."
+  ;; if previous command was switch tab
+  (if (and (or (eq last-command #'tab-line-switch-to-prev-tab) (eq last-command #'tab-line-switch-to-next-tab))
+           ;; and previous buffer was not dired
+           (not (with-current-buffer (car-safe (car-safe (window-prev-buffers (window-normalize-window nil t))))
+                 (derived-mode-p 'dired-mode))))
+      ;; we display tabs using global function
+      (funcall (default-value 'tab-line-tabs-function))
+    ;; else
+    (dired-hist-tl-tabs-mode-buffers)))
+
 (defun dired-hist-tl-dired-mode-hook ()
-  "Should be added to `dired-mode-hook'."
+  "Activation hook, that should be added to `dired-mode-hook'.
+Conflict with `global-tab-line-mode'."
   ;; required and safe - it is here just to keep configuration simplier
   (add-hook 'buffer-list-update-hook #'dired-hist-tl-buffer-list-update-hook)
-  ;; required to properly close tags at right when enter new directory
+
   (make-local-variable 'tab-line-close-tab-function)
+  (make-local-variable 'tab-line-tabs-function)
+  (make-local-variable 'tab-line-tabs-buffer-list-function)
+  ;; required to properly close tags at right when enter new directory
   (setq tab-line-close-tab-function 'kill-buffer)
   ;; used to create tabs list
-  (make-local-variable 'tab-line-tabs-function)
-  (setq tab-line-tabs-function #'dired-hist-tl-tabs-mode-buffers)
-  (make-local-variable 'tab-line-tabs-buffer-list-function)
+  ;; safe version of dired-hist-tl-tabs-mode-buffers
+  (setq tab-line-tabs-function #'dired-hist-tl-tabs-mode-buffers-safe)
   (setq tab-line-tabs-buffer-list-function #'dired-hist-tl-tabs-buffer-list)
   (tab-line-mode))
+
+;; (defun dired-hist-tl-global-tab-line-safe-hook ()
+;;   "Activation hook, safe for `global-tab-line-mode'."
+;;   (if (not (or (eq last-command #'tab-line-switch-to-prev-tab) (eq last-command #'tab-line-switch-to-next-tab)))
+;;       (dired-hist-tl-dired-mode-hook)
+;;     ;; else
+;;     ;; (print "kill")
+
+;;     ;; (kill-local-variable tab-line-close-tab-function)
+;;     ;; (kill-local-variable tab-line-tabs-function)
+;;     ;; (kill-local-variable tab-line-tabs-buffer-list-function)
+;;     ))
 
 (defun dired-hist-tl-dired-find-file()
   "Close tabs to the right to clear forward history.

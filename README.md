@@ -45,6 +45,7 @@ Cons:
 - support for only ```dired-kill-when-opening-new-dired-buffer``` is nil (default of Dired).
 - bound to Tab Line mode and harder to customize.
 
+
 ## Featurs for alternative implementation
 - History showed with tabs in every Dired window
 - Tabs are sorted in order of creation, just as history
@@ -66,6 +67,7 @@ Cons:
 # Other packages with own history implementation
 - diredc - diredc-history-mode - Midnight Commander features (plus) for dired
 - dirvish - extensions/dirvish-history.el - A modern file manager based on dired mode
+- https://github.com/sunrise-commander/sunrise-commander
 
 # Alternative implementation screenshot
 ![Demo](https://github.com/Anoncheg1/public-share/blob/main/dired-hist.png)
