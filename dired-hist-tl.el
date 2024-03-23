@@ -145,7 +145,7 @@ Depending on `tab-line-close-tab-function' BUFFER or TAB are used."
     (funcall tab-line-close-tab-function tab))))
 
 (defun dired-hist-tl-kill-right-tabs ()
-  "Kill tabs at the right side of current tab.
+  "Close tabs at the right side of current tab.
 Used to clear forward history in Dired mode, after we go back to left
 and entered new folder."
       (with-selected-window (selected-window)
@@ -165,7 +165,8 @@ and entered new folder."
           (if pos
               (dolist (tab tabs-right)
                 (setq buffer (if (bufferp tab) tab (cdr (assq 'buffer tab))))
-                (if (bufferp buffer)
+                (if (and (bufferp buffer) ; skip buffers that is shown in windows
+                         (not (get-buffer-window buffer t)))
                     (dired-hist-tl--close buffer tab)))))
         (force-mode-line-update)))
 
