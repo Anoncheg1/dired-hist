@@ -43,6 +43,7 @@
 ;; - going back and up carefully programmed
 ;; - working under root console (theme modus-vivendi)
 ;; - Compatible with `global-tab-line-mode'
+;; - Don't affect showed (live) windows
 
 ;; Configuration:
 
