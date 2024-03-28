@@ -265,7 +265,7 @@ For better compatibility with `global-tab-line-mode'.
 Optional argument EVENT argument of original function."
   (interactive (list last-nonmenu-event))
   (let ((window (and (listp event) (posn-window (event-start event)))))
-    (switch-to-prev-buffer window)))
+    (switch-to-prev-buffer window))) ; window is nil
 
 (defun dired-hist-tl-tab-line-switch-to-next-tab (&optional event)
   "Replacement for `tab-line-switch-to-next-tab'.
