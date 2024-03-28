@@ -1,5 +1,5 @@
 ;;; dired-hist-tl.el --- Traverse Dired buffer's history: back, forward -*- lexical-binding: t -*-
-;; Copyright (C) 2024  Anoncheg1
+;; Copyright (C) 2024 github.com/Anoncheg1,codeberg.org/Anoncheg
 
 ;; Author: codeberg.org/Anoncheg
 ;; Version: 0.13
