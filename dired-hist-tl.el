@@ -1,7 +1,7 @@
 ;;; dired-hist-tl.el --- Traverse Dired buffer's history: back, forward -*- lexical-binding: t -*-
 ;; Copyright (C) 2024  Anoncheg1
 
-;; Author: Anoncheg1
+;; Author: codeberg.org/Anoncheg
 ;; Version: 0.13
 ;; Keywords: convenience, dired, history
 ;; URL: https://github.com/Anoncheg1/dired-hist
