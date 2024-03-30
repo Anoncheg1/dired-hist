@@ -284,7 +284,8 @@ When when"
     (setq dired-hist-tl--history
           (dired-hist-tl--go-up dired-hist-tl--history
                                (current-buffer)
-                               (car (last dired-hist-tl--history))))))
+                               (car (last dired-hist-tl--history)))))
+  (dired-hist-tl-dired-mode-hook))
 
 ;;;###autoload
 (defun dired-hist-tl-dired-up-directory (&optional other-window)
@@ -299,6 +300,7 @@ Optional argument OTHER-WINDOW dired-up-directory original argument."
   ;; 1) check if up folder exist as buffer
   ;; 2) move up buffer in front of current buffer
   ;; 3) switch to up buffer
+
   (let* ((dir (dired-current-directory))
          (up-path (file-name-directory (directory-file-name dir)))
          (up-buffer (car-safe (dired-buffers-for-dir up-path))))
@@ -306,7 +308,8 @@ Optional argument OTHER-WINDOW dired-up-directory original argument."
     (if (and (not (equal dir up-path)) up-buffer)
         (setq dired-hist-tl--history
               (dired-hist-tl--go-up dired-hist-tl--history up-buffer (current-buffer)))))
-  (dired-up-directory other-window))
+  (dired-up-directory other-window)
+  (dired-hist-tl-dired-mode-hook))
 
 
 (defun dired-hist-tl--switch-tab-next(prev &optional event)
