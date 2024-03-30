@@ -224,17 +224,23 @@ is at the edge of our Dired history, return t."
                                    (derived-mode-p 'dired-mode))) dired-hist-tl--history)))
   (or
    (not (derived-mode-p 'dired-mode))
-   (eq (current-buffer) (car filtered))
-   (eq (current-buffer) (car (last filtered))))))
+   ;; (eq (current-buffer) (car filtered))
+   ;; (eq (current-buffer) (car (last filtered)))
+   )))
 
-(defun dired-hist-tl-tabs-mode-buffers-safe ()
+;; (defvar-local dired-hist-tl--forswitch nil
+;; "Non-nil means tab-switching is process.
+;; As &optional forswitch argument for `dired-hist-tl-tabs-mode-buffers-safe'.
+;; To show other tabs only after switch.")
+
+(defun dired-hist-tl-tabs-mode-buffers-safe (&optional forswitch)
   "Wrapper for `dired-hist-tl--tabs-mode-buffers'.
 That is safe for `global-tab-line-mode'."
   (if (not (window-parameter (selected-window) 'dired))
       ;; use global tab-line setting
       (funcall dired-hist-tl--saved-tab-line-tabs-function)
     ;; else
-    (if (dired-hist--check-dired-previous)
+    (if (or (dired-hist--check-dired-previous) forswitch)
         ;; Dired + others
         (let ((orig-sorted (dired-hist-tl--sort-main-according-to-second
                             (dired-hist-tl-tabs-buffer-list)
@@ -318,7 +324,10 @@ Tab list for switching from `tab-line-tabs-function' function."
     (with-selected-window (or window (selected-window))
       (let* ((tabs (seq-filter
                     (lambda (tab) (or (bufferp tab) (assq 'buffer tab)))
-                    (funcall tab-line-tabs-function)))
+                    (if (eq tab-line-tabs-function #'dired-hist-tl-tabs-mode-buffers-safe)
+                        (dired-hist-tl-tabs-mode-buffers-safe t)
+                        ;; else
+                      (funcall tab-line-tabs-function))))
              (pos (seq-position
                    tabs (current-buffer)
                    (lambda (tab buffer)
