@@ -66,12 +66,6 @@ Cons:
 (global-set-key (kbd "C-M-e") #'dired-hist-tl-tab-line-switch-to-next-tab)
 ```
 
-For better compatibility with `global-tab-line-mode' add:
-``` elisp
-(advice-add 'tab-line-switch-to-prev-tab :override #'dired-hist-tl-tab-line-switch-to-prev-tab)
-(advice-add 'tab-line-switch-to-next-tab :override #'dired-hist-tl-tab-line-switch-to-next-tab)
-```
-
 # Other packages with own history implementation
 - diredc - diredc-history-mode - Midnight Commander features (plus) for dired
 - dirvish - extensions/dirvish-history.el - A modern file manager based on dired mode
