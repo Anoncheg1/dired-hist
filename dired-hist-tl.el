@@ -285,7 +285,7 @@ When when"
           (dired-hist-tl--go-up dired-hist-tl--history
                                (current-buffer)
                                (car (last dired-hist-tl--history)))))
-  (dired-hist-tl-dired-mode-hook))
+  (dired-hist-tl-dired-mode-hook)) ; activation for new windows
 
 ;;;###autoload
 (defun dired-hist-tl-dired-up-directory (&optional other-window)
@@ -309,7 +309,7 @@ Optional argument OTHER-WINDOW dired-up-directory original argument."
         (setq dired-hist-tl--history
               (dired-hist-tl--go-up dired-hist-tl--history up-buffer (current-buffer)))))
   (dired-up-directory other-window)
-  (dired-hist-tl-dired-mode-hook))
+  (dired-hist-tl-dired-mode-hook)) ; activation for new windows
 
 
 (defun dired-hist-tl--switch-tab-next(prev &optional event)
