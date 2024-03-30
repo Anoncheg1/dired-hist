@@ -62,8 +62,8 @@ Cons:
 (add-hook 'dired-mode-hook #'dired-hist-tl-dired-mode-hook)
 (define-key dired-mode-map (kbd "RET") #'dired-hist-tl-dired-find-file)
 (define-key dired-mode-map (kbd "^") #'dired-hist-tl-dired-up-directory)
-(define-key dired-mode-map (kbd "l") #'tab-line-switch-to-prev-tab)
-(define-key dired-mode-map (kbd "r") #'tab-line-switch-to-next-tab)
+(global-set-key (kbd "C-M-a") #'dired-hist-tl-tab-line-switch-to-prev-tab)
+(global-set-key (kbd "C-M-e") #'dired-hist-tl-tab-line-switch-to-next-tab)
 ```
 
 For better compatibility with `global-tab-line-mode' add:
