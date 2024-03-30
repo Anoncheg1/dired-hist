@@ -78,4 +78,4 @@ For better compatibility with `global-tab-line-mode' add:
 - https://github.com/sunrise-commander/sunrise-commander
 
 # Alternative implementation screenshot
-![Demo](https://github.com/Anoncheg1/public-share/blob/main/dired-hist.png)
+![Demo](https://codeberg.org/Anoncheg/public-share/raw/branch/main/dired-hist.png)
