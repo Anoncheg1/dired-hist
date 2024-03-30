@@ -41,7 +41,8 @@
 
 ;; - History showed with tabs in every Dired window
 ;; - Tabs are sorted in order of creation, just as history
-;; - working under root console (theme modus-vivendi)
+;; - Working under root console (theme modus-vivendi)
+;; -
 
 ;; Configuration:
 
@@ -52,7 +53,11 @@
 ;; (global-set-key (kbd "C-M-a") #'dired-hist-tl-tab-line-switch-to-prev-tab)
 ;; (global-set-key (kbd "C-M-e") #'dired-hist-tl-tab-line-switch-to-next-tab)
 
-;; Recommend to add (setopt tab-line-switch-cycling t)
+;; Testest with:
+;; (global-tab-line-mode t)
+;; (setopt tab-line-tabs-function #'tab-line-tabs-mode-buffers)
+;; (setopt tab-line-switch-cycling t)
+
 ;; Customization:
 
 ;; There are no customization options at this time.
@@ -75,12 +80,20 @@
 
 ;; The problem with `tab-line-switch-to-prev-tab' that it uses
 ;; `switch-to-buffer' changing `window-prev-buffers' order of current buffer.
-;; (switch-to-prev-buffer nil)
+;; (switch-to-prev-buffer nil).
 
 ;; History is preserved as a list of buffers, used for both: history
 ;; and tabs displaying.
 ;; We display buffers as tabs: Dired buffers + other buffers.
 
+;; For compatibility with `global-tab-line-mode' we save global
+;; funcion that generate list of tabs and mark window in which Dired
+;; mode was started. In our `dired-hist-tl-tabs-mode-buffers-safe'
+;; that generate list of tabs we check a mark of window and use saved
+;; function if window don't have a mark.
+
+;; Our replace functions to switch tabs didn't cause problems with
+;; `global-tab-line-mode'.
 
 ;;; Code:
 (require 'tab-line)
@@ -97,6 +110,8 @@ Argument BUFFER-UP buffer that will be moved in front of BUFFER-CURENT."
         (setq h (delq buffer-up h))
         (setq p (1+ (seq-position h buffer-current)))
         (append (seq-take h p) (list buffer-up) (seq-drop h p))))
+
+(defvar dired-hist-tl--saved-tab-line-tabs-function nil)
 ;; -- tests `dired-hist-tl--go-up'
 ;; (setq a '(1 2 3 4))
 ;; (if (not (equal (dired-hist-tl--go-up a 2 3) '(1 3 2 4)))
@@ -216,18 +231,21 @@ is at the edge of our Dired history, return t."
 (defun dired-hist-tl-tabs-mode-buffers-safe ()
   "Wrapper for `dired-hist-tl--tabs-mode-buffers'.
 That is safe for `global-tab-line-mode'."
-  ;; if previous command was switch tab
-  (if (dired-hist--check-dired-previous) ; default: dired + others
-      ;; we display tabs using global default function, but sort dired
-      (let ((orig-sorted (dired-hist-tl--sort-main-according-to-second
-                          (dired-hist-tl-tabs-buffer-list)
-                          dired-hist-tl--history)))
-        (append (seq-filter (lambda (b) (with-current-buffer b
-                                          (derived-mode-p 'dired-mode))) orig-sorted) ; dird
-                (seq-filter (lambda (b) (with-current-buffer b
-                                          (null (derived-mode-p 'dired-mode)))) orig-sorted))) ; not dird
-    ;; else - get our Dired history
-    (dired-hist-tl--tabs-mode-buffers)))
+  (if (not (window-parameter (selected-window) 'dired))
+      ;; use global tab-line setting
+      (funcall dired-hist-tl--saved-tab-line-tabs-function)
+    ;; else
+    (if (dired-hist--check-dired-previous) ; default: dired + others
+        ;; we display tabs using global default function, but sort dired
+        (let ((orig-sorted (dired-hist-tl--sort-main-according-to-second
+                            (dired-hist-tl-tabs-buffer-list)
+                            dired-hist-tl--history)))
+          (append (seq-filter (lambda (b) (with-current-buffer b
+                                            (derived-mode-p 'dired-mode))) orig-sorted) ; dird
+                  (seq-filter (lambda (b) (with-current-buffer b
+                                            (null (derived-mode-p 'dired-mode)))) orig-sorted))) ; not dird
+      ;; else - get our Dired history
+      (dired-hist-tl--tabs-mode-buffers))))
 
 
 ;; ------------------------------------------------------------------
@@ -242,11 +260,17 @@ Conflict with `global-tab-line-mode'."
   (make-local-variable 'tab-line-close-tab-function)
   ;; required to properly close tags at right when enter new directory
   (setq tab-line-close-tab-function 'kill-buffer)
+  ;; save and set
+  (if (null dired-hist-tl--saved-tab-line-tabs-function)
+      (setq dired-hist-tl--saved-tab-line-tabs-function tab-line-tabs-function))
   ;; used to create tabs list
   ;; safe version of `dired-hist-tl--tabs-mode-buffers'
   (setq tab-line-tabs-function #'dired-hist-tl-tabs-mode-buffers-safe) ;
   ;; (setq tab-line-tabs-buffer-list-function #'dired-hist-tl-tabs-buffer-list)
-  (tab-line-mode))
+  ;; activate tab-line-mode
+  (tab-line-mode)
+  ;; mark current window as Dired oriented - for compatibility with global-tab-line-mode
+  (set-window-parameter (selected-window) 'dired t))
 
 ;;;###autoload
 (defun dired-hist-tl-dired-find-file()
