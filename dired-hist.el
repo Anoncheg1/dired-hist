@@ -3,7 +3,7 @@
 ;; Copyright (C) 2022  Karthik Chikmagalur
 
 ;; Author: Karthik Chikmagalur <karthik.chikmagalur@gmail.com>
-;;      Anoncheg1
+;;      github.com/Anoncheg1,codeberg.org/Anoncheg
 ;; Created: 2022
 ;; Version: 0.13
 ;; Package-Requires: ((emacs "27.1"))
