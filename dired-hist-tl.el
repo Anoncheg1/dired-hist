@@ -42,7 +42,6 @@
 ;; - History showed with tabs in every Dired window
 ;; - Tabs are sorted in order of creation, just as history
 ;; - Working under root console (theme modus-vivendi)
-;; -
 
 ;; Configuration:
 

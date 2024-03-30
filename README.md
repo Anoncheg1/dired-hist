@@ -50,10 +50,10 @@ Cons:
 ## Featurs for alternative implementation
 - History showed with tabs in every Dired window
 - Tabs are sorted in order of creation, just as history
-- Compatible with ```global-tab-line-mode```
+- Should be compatible with ```global-tab-line-mode```
 - Going back and up carefully programmed
 - Working under root console and terminal (theme modus-vivendi)
-- Don't affect showed (live) windows
+
 
 ## Configuration for alternative implementation
 
