@@ -215,18 +215,18 @@ buffer."
                               (derived-mode-p mode)))
                 (dired-hist-tl-tabs-buffer-list))))
 
-(defun dired-hist--check-dired-previous ()
-"Chech whether should we use default tab-line or our history.
-If return t default tab-line should used.  If last comamand was
-tab switching and current buffer is not dired or current buffer
-is at the edge of our Dired history, return t."
-(let ((filtered (seq-filter (lambda (b) (with-current-buffer b ; arg1
-                                   (derived-mode-p 'dired-mode))) dired-hist-tl--history)))
-  (or
-   (not (derived-mode-p 'dired-mode))
-   ;; (eq (current-buffer) (car filtered))
-   ;; (eq (current-buffer) (car (last filtered)))
-   )))
+;; (defun dired-hist--check-dired-previous ()
+;; "Chech whether should we use default tab-line or our history.
+;; If return t default tab-line should used.  If last comamand was
+;; tab switching and current buffer is not dired or current buffer
+;; is at the edge of our Dired history, return t."
+;; (let ((filtered (seq-filter (lambda (b) (with-current-buffer b ; arg1
+;;                                    (derived-mode-p 'dired-mode))) dired-hist-tl--history)))
+;;   (or
+;;    (not (derived-mode-p 'dired-mode))
+;;    ;; (eq (current-buffer) (car filtered))
+;;    ;; (eq (current-buffer) (car (last filtered)))
+;;    )))
 
 ;; (defvar-local dired-hist-tl--forswitch nil
 ;; "Non-nil means tab-switching is process.
@@ -240,7 +240,7 @@ That is safe for `global-tab-line-mode'."
       ;; use global tab-line setting
       (funcall dired-hist-tl--saved-tab-line-tabs-function)
     ;; else
-    (if (or (dired-hist--check-dired-previous) forswitch)
+    (if (or (not (derived-mode-p 'dired-mode)) forswitch)
         ;; Dired + others
         (let ((orig-sorted (dired-hist-tl--sort-main-according-to-second
                             (dired-hist-tl-tabs-buffer-list)
