@@ -234,8 +234,8 @@ That is safe for `global-tab-line-mode'."
       ;; use global tab-line setting
       (funcall dired-hist-tl--saved-tab-line-tabs-function)
     ;; else
-    (if (dired-hist--check-dired-previous) ; default: dired + others
-        ;; we display tabs using global default function, but sort dired
+    (if (dired-hist--check-dired-previous)
+        ;; Dired + others
         (let ((orig-sorted (dired-hist-tl--sort-main-according-to-second
                             (dired-hist-tl-tabs-buffer-list)
                             dired-hist-tl--history)))
@@ -243,7 +243,7 @@ That is safe for `global-tab-line-mode'."
                                             (derived-mode-p 'dired-mode))) orig-sorted) ; dird
                   (seq-filter (lambda (b) (with-current-buffer b
                                             (null (derived-mode-p 'dired-mode)))) orig-sorted))) ; not dird
-      ;; else - get our Dired history
+      ;; else - get only Dired buffers
       (dired-hist-tl--tabs-mode-buffers))))
 
 
