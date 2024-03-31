@@ -43,7 +43,8 @@
 ;; - Tabs are sorted in order of creation, just as history
 ;; - Working under root console (theme modus-vivendi)
 ;; - Support only `dired-kill-when-opening-new-dired-buffer' is nil.
-;; - If Dired was used in window we mark this window as Dired oriented.
+;; - If Dired was used in window we mark this window as Dired oriented,
+;;   kill-buffer unmark current window.
 
 ;; Configuration:
 
@@ -230,6 +231,10 @@ Optional argument FORSWITCH used to flag that we get tab list for tab selection,
       ;; else - get only Dired buffers
       (dired-hist-tl--tabs-mode-buffers))))
 
+(defun dired-hist-tl--undired-window (&rest r)
+  (if (derived-mode-p 'dired-mode)
+      (set-window-parameter (selected-window) 'dired nil)))
+
 ;; ------------------------------------------------------------------
 
 ;;;###autoload
@@ -252,7 +257,8 @@ Conflict with `global-tab-line-mode'."
   ;; activate tab-line-mode
   (tab-line-mode)
   ;; mark current window as Dired oriented - for compatibility with global-tab-line-mode
-  (set-window-parameter (selected-window) 'dired t))
+  (set-window-parameter (selected-window) 'dired t)
+  (advice-add 'kill-buffer :before #'dired-hist-tl--undired-window))
 
 ;;;###autoload
 (defun dired-hist-tl-dired-find-file()
