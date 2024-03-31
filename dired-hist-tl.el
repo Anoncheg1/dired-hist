@@ -2,7 +2,7 @@
 ;; Copyright (C) 2024 github.com/Anoncheg1,codeberg.org/Anoncheg
 
 ;; Author: github.com/Anoncheg1,codeberg.org/Anoncheg
-;; Version: 0.13
+;; Version: 0.14
 ;; Keywords: convenience, dired, history
 ;; URL: https://github.com/Anoncheg1/dired-hist
 

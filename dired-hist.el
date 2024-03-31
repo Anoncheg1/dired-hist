@@ -5,7 +5,7 @@
 ;; Author: Karthik Chikmagalur <karthik.chikmagalur@gmail.com>
 ;;      github.com/Anoncheg1,codeberg.org/Anoncheg
 ;; Created: 2022
-;; Version: 0.13
+;; Version: 0.14
 ;; Package-Requires: ((emacs "27.1"))
 ;; Keywords: convenience, dired, history
 ;; URL: https://github.com/Anoncheg1/dired-hist
@@ -127,6 +127,10 @@
 ;; - additinal debugging
 ;; - better behavior for dired-kill-when-opening-new-dired-buffer nil
 ;;   mode: when change buffer manually and close buffer.
+;; 0.14
+;; - added alternative implementation based on tab-line-mode with
+;;   visible history on reused buffers.
+;; - dired-hist not changed
 
 ;;; Code:
 (require 'dired)
