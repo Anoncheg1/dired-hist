@@ -42,6 +42,8 @@
 ;; - History showed with tabs in every Dired window
 ;; - Tabs are sorted in order of creation, just as history
 ;; - Working under root console (theme modus-vivendi)
+;; - Support only `dired-kill-when-opening-new-dired-buffer' is nil.
+;; - If Dired was used in window we mark this window as Dired oriented.
 
 ;; Configuration:
 
@@ -87,7 +89,7 @@
 
 ;; For compatibility with `global-tab-line-mode' we save global
 ;; funcion that generate list of tabs and mark window in which Dired
-;; mode was started. In our `dired-hist-tl-tabs-mode-buffers-safe'
+;; mode was started.  In our `dired-hist-tl-tabs-mode-buffers-safe'
 ;; that generate list of tabs we check a mark of window and use saved
 ;; function if window don't have a mark.
 
@@ -99,7 +101,7 @@
 (require 'dired) ; for `dired-hist-tl-dired-find-file' only
 
 (defvar dired-hist-tl--history nil
-  "Mirror of `buffer-list' variable with preserving order.")
+  "`buffer-list' with preserved order.")
 
 (defun dired-hist-tl--go-up (history buffer-up buffer-current)
   "Move buffer BUFFER in place of BUFFER-CURRENT in HISTORY list.
@@ -122,15 +124,14 @@ Argument BUFFER-UP buffer that will be moved in front of BUFFER-CURENT."
 
 
 (defun dired-hist-tl--sort-main-according-to-second (main-list reference-list)
-  "Sort only elemets of MAIN-LIST that exist in REFERENCE-LIST."
+  "Sort only elemets of MAIN-LIST that exist in REFERENCE-LIST.
+Return MAIN-LIST with sorted elements that exist in REFERENCE-LIST."
   (sort
    (copy-sequence main-list)
    (lambda (a b) (if (and (seq-contains-p reference-list a) (seq-contains-p reference-list b))
                      (< (seq-position reference-list a) (seq-position reference-list b))
                    ;; else
-                   (< (seq-position main-list a) (seq-position main-list b))
-                   ))
-   )) ; sequence
+                   (< (seq-position main-list a) (seq-position main-list b))))))
 ;; -- test for
 ;; (setq main-list '(3 1 7 4 2 9))
 ;; (setq reference-list '(1 2 4))
@@ -182,22 +183,16 @@ and entered new folder."
                     (dired-hist-tl--close buffer tab)))))
         (force-mode-line-update)))
 
-(defun dired-hist-tl--buffer-list ()
-  (seq-filter (lambda (b) (and (buffer-live-p b)
-                               (/= (aref (buffer-name b) 0) ?\s)))
-              (seq-uniq (buffer-list))))
-
 (defun dired-hist-tl--buffer-list-update-hook ()
   "Sync buffer-list-ordered with current `buffer-list'.
 Executed at any interactions with tabs.
 Keep only ordered list of Dired tabs."
   (setq dired-hist-tl--history
-        (dired-hist-tl--sort-main-according-to-second ; call
-         (dired-hist-tl--buffer-list)
-         ;; (seq-filter (lambda (b) (with-current-buffer b ; arg1
-         ;;                           (derived-mode-p 'dired-mode))) (buffer-list))
-         dired-hist-tl--history)) ; arg2
-  )
+        (dired-hist-tl--sort-main-according-to-second
+         (seq-filter (lambda (b) (and (buffer-live-p b)
+                               (/= (aref (buffer-name b) 0) ?\s)))
+              (seq-uniq (buffer-list))) ; Get `buffer-list' with alive filter.
+         dired-hist-tl--history)))
 
 (defun dired-hist-tl-tabs-buffer-list ()
   "Replacement of `tab-line-tabs-buffer-list' function.
@@ -215,31 +210,14 @@ buffer."
                               (derived-mode-p mode)))
                 (dired-hist-tl-tabs-buffer-list))))
 
-;; (defun dired-hist--check-dired-previous ()
-;; "Chech whether should we use default tab-line or our history.
-;; If return t default tab-line should used.  If last comamand was
-;; tab switching and current buffer is not dired or current buffer
-;; is at the edge of our Dired history, return t."
-;; (let ((filtered (seq-filter (lambda (b) (with-current-buffer b ; arg1
-;;                                    (derived-mode-p 'dired-mode))) dired-hist-tl--history)))
-;;   (or
-;;    (not (derived-mode-p 'dired-mode))
-;;    ;; (eq (current-buffer) (car filtered))
-;;    ;; (eq (current-buffer) (car (last filtered)))
-;;    )))
-
-;; (defvar-local dired-hist-tl--forswitch nil
-;; "Non-nil means tab-switching is process.
-;; As &optional forswitch argument for `dired-hist-tl-tabs-mode-buffers-safe'.
-;; To show other tabs only after switch.")
-
 (defun dired-hist-tl-tabs-mode-buffers-safe (&optional forswitch)
   "Wrapper for `dired-hist-tl--tabs-mode-buffers'.
-That is safe for `global-tab-line-mode'."
+That is safe for `global-tab-line-mode'.
+Optional argument FORSWITCH used to flag that we get tab list for tab selection, because we show only Dired tabs for compact view."
   (if (not (window-parameter (selected-window) 'dired))
-      ;; use global tab-line setting
+      ;; use global tab-line setting to be compatible with `global-tab-line-mode'
       (funcall dired-hist-tl--saved-tab-line-tabs-function)
-    ;; else
+    ;; else - this window was marked as Dired oriented.
     (if (or (not (derived-mode-p 'dired-mode)) forswitch)
         ;; Dired + others
         (let ((orig-sorted (dired-hist-tl--sort-main-according-to-second
@@ -251,7 +229,6 @@ That is safe for `global-tab-line-mode'."
                                             (null (derived-mode-p 'dired-mode)))) orig-sorted))) ; not dird
       ;; else - get only Dired buffers
       (dired-hist-tl--tabs-mode-buffers))))
-
 
 ;; ------------------------------------------------------------------
 
@@ -319,7 +296,8 @@ Optional argument OTHER-WINDOW dired-up-directory original argument."
 
 (defun dired-hist-tl--switch-tab-next(prev &optional event)
   "If PREV is t switch to previous tab, if nil switch to next.
-Tab list for switching from `tab-line-tabs-function' function."
+Tab list for switching from `tab-line-tabs-function' function.
+Optional argument EVENT used four mouse interface."
   (let ((window (and (listp event) (posn-window (event-start event)))))
     (with-selected-window (or window (selected-window))
       (let* ((tabs (seq-filter
