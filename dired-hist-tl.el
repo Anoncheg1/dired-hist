@@ -226,8 +226,9 @@ Optional argument FORSWITCH used to flag that we get tab list for tab selection,
                             dired-hist-tl--history)))
           (append (seq-filter (lambda (b) (with-current-buffer b
                                             (derived-mode-p 'dired-mode))) orig-sorted) ; dird
-                  (seq-filter (lambda (b) (with-current-buffer b
-                                            (null (derived-mode-p 'dired-mode)))) orig-sorted))) ; not dird
+                  ;; not dird - reverse because C-b should switch back to Dired.
+                  (reverse (seq-filter (lambda (b) (with-current-buffer b
+                                            (null (derived-mode-p 'dired-mode)))) orig-sorted))))
       ;; else - get only Dired buffers
       (dired-hist-tl--tabs-mode-buffers))))
 
