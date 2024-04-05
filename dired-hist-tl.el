@@ -298,6 +298,7 @@ Optional argument OTHER-WINDOW dired-up-directory original argument."
         (setq dired-hist-tl--history
               (dired-hist-tl--go-up dired-hist-tl--history up-buffer (current-buffer)))))
   (dired-up-directory other-window)
+  (dired-hist-tl--kill-right-tabs)
   (dired-hist-tl-dired-mode-hook)) ; activation for new windows
 
 
