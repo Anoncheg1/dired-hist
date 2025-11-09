@@ -13,6 +13,8 @@ Original author is Karthik Chikmagalur https://github.com/karthink/dired-hist
 
 Tested with Emacs 29.2.
 
+Personal note: I don't use it, I found that recentf package with history of folders is better.
+
 ## Features
 - supported for two Dired modes: open folder in new buffer or in the same (dired-kill-when-opening-new-dired-buffer)
 - if buffer is closed we remove his record from history
