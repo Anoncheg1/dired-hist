@@ -28,7 +28,7 @@ jobs:
         env:
           LOCAL_REPO: ${{ github.workspace }}
           # RECIPE is your recipe as written for MELPA:
-          RECIPE: (org-links :fetcher github :repo "Anoncheg1/dired-hist")
+          RECIPE: (dired-hist :fetcher github :repo "Anoncheg1/dired-hist")
           # set this to false (or remove it) if the package isn't on MELPA:
           EXIST_OK: true
         run: |

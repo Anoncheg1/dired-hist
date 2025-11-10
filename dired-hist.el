@@ -259,7 +259,7 @@ ITEM is a cons cell in form of (marker . directory-path)."
      (win (select-window win))
      (alive-p (switch-to-buffer last-buffer))
      (t  (if (and dired-kill-when-opening-new-dired-buffer
-                  (eq major-mode 'dired-mode))
+                  (derived-mode-p 'dired-mode))
              ;; just change current folder
              ;; (dired-noselect (cdr item)) ; (expand-file-name (cdr item))
              ;; (dired--find-possibly-alternative-file (cdr item)) ; depend on (emacs "28.1")
@@ -276,7 +276,7 @@ ITEM is a cons cell in form of (marker . directory-path)."
 Additional just in case:
 3) try to find path in hist stack
 4) try to find path in forward stack"
-  (if (and (eq major-mode 'dired-mode) (null dired-kill-when-opening-new-dired-buffer))
+  (if (and (derived-mode-p 'dired-mode) (null dired-kill-when-opening-new-dired-buffer))
       (let ((cb (current-buffer))
             (new-stack)
             (item))
@@ -327,7 +327,7 @@ Keep track of visited Dired buffers and switch between them."
       (progn
         ;; if mode added as hook to `dired-mode-hook' or activated
         ;; during Dired mode.
-        (if (eq major-mode 'dired-mode)
+        (if (derived-mode-p 'dired-mode)
             (dired-hist--update t))
         ;; if mode activated globally
         (add-hook 'dired-mode-hook #'dired-hist--update)
