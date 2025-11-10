@@ -1,10 +1,10 @@
 ;;; dired-hist-tl.el --- Traverse Dired buffer's history: back, forward -*- lexical-binding: t -*-
 ;; Copyright (C) 2024 github.com/Anoncheg1,codeberg.org/Anoncheg
-
-;; Author: github.com/Anoncheg1,codeberg.org/Anoncheg
+;; Author: <github.com/Anoncheg1,codeberg.org/Anoncheg>
 ;; Version: 0.14
 ;; Keywords: convenience, dired, history
 ;; URL: https://codeberg.org/Anoncheg/dired-hist
+;; Package-Requires: ((emacs "27.1"))
 
 ;; This file is NOT part of GNU Emacs.
 
@@ -214,7 +214,8 @@ buffer."
 (defun dired-hist-tl-tabs-mode-buffers-safe (&optional forswitch)
   "Wrapper for `dired-hist-tl--tabs-mode-buffers'.
 That is safe for `global-tab-line-mode'.
-Optional argument FORSWITCH used to flag that we get tab list for tab selection, because we show only Dired tabs for compact view."
+If Optional argument FORSWITCH is non-nil we get tab list for tab
+selection, because we show only Dired tabs for compact view."
   (if (not (window-parameter (selected-window) 'dired))
       ;; use global tab-line setting to be compatible with `global-tab-line-mode'
       (funcall dired-hist-tl--saved-tab-line-tabs-function)
@@ -225,14 +226,18 @@ Optional argument FORSWITCH used to flag that we get tab list for tab selection,
                             (dired-hist-tl-tabs-buffer-list)
                             dired-hist-tl--history)))
           (append (seq-filter (lambda (b) (with-current-buffer b
-                                            (derived-mode-p 'dired-mode))) orig-sorted) ; dird
+                                            (derived-mode-p 'dired-mode)))
+                              orig-sorted) ; dird
                   ;; not dird - reverse because C-b should switch back to Dired.
                   (reverse (seq-filter (lambda (b) (with-current-buffer b
-                                            (null (derived-mode-p 'dired-mode)))) orig-sorted))))
+                                            (null (derived-mode-p 'dired-mode))))
+                                       orig-sorted))))
       ;; else - get only Dired buffers
       (dired-hist-tl--tabs-mode-buffers))))
 
-(defun dired-hist-tl--undired-window (&rest r)
+(defun dired-hist-tl--undired-window (&rest _args)
+  "Advice for `kill-buffer'."
+  (ignore _args)
   (if (derived-mode-p 'dired-mode)
       (set-window-parameter (selected-window) 'dired nil)))
 
