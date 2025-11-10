@@ -4,7 +4,6 @@
 ;; Version: 0.14
 ;; Keywords: convenience, dired, history
 ;; URL: https://codeberg.org/Anoncheg/dired-hist
-;; Package-Requires: ((emacs "27.1"))
 
 ;; This file is NOT part of GNU Emacs.
 
