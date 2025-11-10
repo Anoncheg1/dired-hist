@@ -1,5 +1,4 @@
-![Eask badge](https://github.com/Anoncheg1/dired-hist/actions/workflows/test.yml/badge.svg?event=release)
-![melpazoid badge](https://github.com/Anoncheg1/dired-hist/actions/workflows/melpazoid.yml/badge.svg)
+![build](https://github.com/Anoncheg1/dired-hist/workflows/melpazoid/badge.svg)
 [![Melpa](https://melpa.org/packages/dired-hist-badge.svg)](https://melpa.org/#/dired-hist)
 [![Melpa Stable](https://stable.melpa.org/packages/dired-hist-badge.svg)](https://stable.melpa.org/#/dired-hist)
 

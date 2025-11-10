@@ -35,7 +35,8 @@
 ;; This package require Emacs "26.1" actually, "27.1" reqqired by
 ;; `dired-hist-tl'
 
-;; Personal note: I don't use it, I found that recentf package with history of folders is better.
+;; Personal note: I don't use it, I found that recentf package with
+;; history of folders is better.
 
 ;; Commands:
 
