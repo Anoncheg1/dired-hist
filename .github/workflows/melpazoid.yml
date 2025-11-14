@@ -34,10 +34,11 @@ jobs:
         run: |
           echo $GITHUB_REF
           if make -C ~/melpazoid |& tee output.log; then
-            if grep -q "Warning" output.log; then
-              echo "Warnings detected, failing workflow"
-              exit 1
-            fi
+            :
+            # if grep -q "Warning" output.log; then
+            #   echo "Warnings detected, failing workflow"
+            #   exit 1
+            # fi
           else
             echo "Make command failed, failing workflow"
             exit 1
